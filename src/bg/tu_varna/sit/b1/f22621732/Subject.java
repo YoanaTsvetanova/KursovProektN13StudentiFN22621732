@@ -2,6 +2,7 @@ package bg.tu_varna.sit.b1.f22621732;
 
 public class Subject {
     private String name;
+
     private String type;
 
     public Subject(String name, String type) {
