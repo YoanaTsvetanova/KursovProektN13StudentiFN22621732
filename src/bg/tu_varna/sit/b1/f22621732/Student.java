@@ -86,12 +86,4 @@ public class Student {
     public void setAverageGrade(double averageGrade) {
         this.averageGrade = averageGrade;
     }
-
-    /*public void ToString(){
-        System.out.println("name:"+this.name);
-        System.out.println("group:"+this.group);
-        System.out.println("status:"+this.status);
-
-
-    }*/
 }
