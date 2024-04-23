@@ -30,6 +30,7 @@ public class Main {
         boolean running = true;
 
         while (running) {
+
             System.out.print("> ");
             String input = scanner.nextLine();
             String[] parts = input.split("\\s+");
