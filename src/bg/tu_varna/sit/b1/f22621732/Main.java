@@ -26,5 +26,49 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Welcome to Student Management System!");
         System.out.println("Type 'Help' to see available commands.");
+
+        boolean running = true;
+
+        while (running) {
+            System.out.print("> ");
+            String input = scanner.nextLine();
+            String[] parts = input.split("\\s+");
+
+            String command = parts[0];
+            String[] arguments = Arrays.copyOfRange(parts, 1, parts.length);
+
+            switch (command) {
+                case "Open":
+                        System.out.println("open");
+                    break;
+                case "Save":
+                    System.out.println("save");
+                    break;
+                case "SaveAs":
+                        System.out.println("saveas");
+                    break;
+                case "Close":
+                    System.out.println("close");
+                    break;
+                case "Help":
+                    displayHelp();
+                    break;
+                case "Exit":
+                    running = false;
+                    break;
+                default:
+                    if (!fileOpened) {
+                        System.out.println("No file is currently open. Please open a file first.");
+                    } else {
+                        System.out.println("Unknown command. Type 'Help' for available commands.");
+                    }
+                    break;
+            }
+        }
+
+        scanner.close();
+        System.out.println("Goodbye!");
     }
 }
+
+
