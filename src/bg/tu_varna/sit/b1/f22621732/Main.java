@@ -201,6 +201,8 @@ public class Main {
     private static void printProtocol(String course) {
     }
 
+
+
     private static void printReport(String facultyNumber) {
     }
 
