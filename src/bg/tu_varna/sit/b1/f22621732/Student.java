@@ -86,4 +86,20 @@ public class Student {
     public void setAverageGrade(double averageGrade) {
         this.averageGrade = averageGrade;
     }
+
+    public Map<String, String> getEnrolledCourses() {
+        return enrolledCourses;
+    }
+
+    public void setEnrolledCourses(Map<String, String> enrolledCourses) {
+        this.enrolledCourses = enrolledCourses;
+    }
+
+    public Map<String, Integer> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(Map<String, Integer> grades) {
+        this.grades = grades;
+    }
 }
