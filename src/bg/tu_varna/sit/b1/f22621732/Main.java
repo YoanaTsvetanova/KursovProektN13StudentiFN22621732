@@ -175,6 +175,7 @@ public class Main {
     private static void closeFile() {
    }
 
+
     private static void enrollStudent(String facultyNumber, String program, String group, String name) {
         Student student = new Student(name, facultyNumber, program, group, "Enrolled successfully.");
         students.put(facultyNumber, student);
