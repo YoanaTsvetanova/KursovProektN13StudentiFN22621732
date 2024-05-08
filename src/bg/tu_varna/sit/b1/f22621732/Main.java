@@ -1,6 +1,5 @@
 package bg.tu_varna.sit.b1.f22621732;
 
-import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +10,7 @@ public class Main {
     private static String currentFileName = null;
     private static boolean fileOpened = false;
     private static Scanner scanner = new Scanner(System.in);
+
 
     private static void displayHelp() {
         System.out.println("The following commands are supported:");
@@ -34,6 +34,10 @@ public class Main {
 
     }
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         System.out.println("Welcome to Student Management System!");
         System.out.println("Type 'Help' to see available commands.");
