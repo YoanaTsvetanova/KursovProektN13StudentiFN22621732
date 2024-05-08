@@ -1,6 +1,7 @@
 package bg.tu_varna.sit.b1.f22621732;
 import java.util.*;
 
+
 public class Student {
 
     private String name;
@@ -23,6 +24,7 @@ public class Student {
         this.grades = new HashMap<>();
         this.enrolledCourses = new HashMap<>();
     }
+
 
     public String getName() {
 
