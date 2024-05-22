@@ -7,7 +7,7 @@ public class Student {
     private String name;
     private String facultyNumber;
     private String specialty;
-    private int currentCourse;
+    private int currentCourse ;
     private String group;
     private String status;
     private double averageGrade;
@@ -18,6 +18,7 @@ public class Student {
         this.name = name;
         this.facultyNumber = facultyNumber;
         this.specialty = specialty;
+        this.currentCourse = 1;
         this.group = group;
         this.status = status;
         this.averageGrade = 0.0;
@@ -81,6 +82,9 @@ public class Student {
     }
 
     public double getAverageGrade() {
+        grades.forEach((key,value)-> averageGrade+=value);
+
+        averageGrade = averageGrade / grades.size();
 
         return averageGrade;
     }
