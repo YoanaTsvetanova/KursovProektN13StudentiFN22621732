@@ -20,13 +20,14 @@ public class Main {
         System.out.println("Close - Close the current file");
         System.out.println("Help - Display available commands");
         System.out.println("Exit - Exit the program");
-        System.out.println("Enroll <fn><program><group><name> - Enroll a student)");
-        System.out.println("Advance <fn> - Enroll a student in an upper course");
+        System.out.println("Enroll <fn><specialty><group><name> - Enroll a student");
+        System.out.println("Change <fn><option(specialty, group, year)><value> - Change students information)");
+        System.out.println("Advance <fn> - Enroll a student in an upper year");
         System.out.println("Graduate <fn> - Mark a student as a graduate");
-        System.out.println("Interrupt <fn> - Mark a students course as interrupted");
-        System.out.println("Resume <fn> - Mark a students course as resumed");
+        System.out.println("Interrupt <fn> - Mark a students year as interrupted");
+        System.out.println("Resume <fn> - Mark a students year as resumed");
         System.out.println("Print <fn> - Print all for this student");
-        System.out.println("PrintAll <program><year>- Print all students in this program and year");
+        System.out.println("PrintAll <specialty><year>- Print all students in this program and year");
         System.out.println("EnrollIn <fn><course> - Enroll student in this course");
         System.out.println("AddGrade <fn><course><grade> - Add a grade");
         System.out.println("Protocol <course> - Print protocols for students in this course");
@@ -75,6 +76,18 @@ public class Main {
                     if (arguments.length == 4) {
                         enrollStudent(arguments[0], arguments[1], arguments[2], arguments[3]);
                         System.out.println("Successfully enrolled student.");
+                    } else {
+                        System.out.println("error");
+                    }
+                    break;
+                case "Change":
+                    if (arguments.length == 3) {
+                        if(getStudentStatus(arguments[0]).equals("interrupted")){
+                            System.out.println("Cant make changes to interrupted student");
+                            break;
+                        }
+                        transferStudent(arguments[0], arguments[1], arguments[2]);
+                        System.out.println("Successfully changed student's information.");
                     } else {
                         System.out.println("error");
                     }
@@ -185,6 +198,47 @@ public class Main {
         students.put(facultyNumber, student);
     }
 
+    private static void transferStudent(String facultyNumber, String option, String value) {
+        if (!students.containsKey(facultyNumber)) {
+            System.out.println("Student with the given faculty number does not exist.");
+            return;
+        }
+        Student student = students.get(facultyNumber);
+
+        switch (option) {
+            case "specialty":
+                transferToSpecialty(student, value);
+                break;
+            case "group":
+                student.setGroup(value);
+                break;
+            case "year":
+                if(Integer.parseInt(value)>4){
+                    System.out.println("Student courses can be only 1 - 4");
+                    break;
+                }
+                if(student.getCurrentCourse()+1 == Integer.parseInt(value)){
+                    transferToYear(student, Integer.parseInt(value));
+                }
+                else System.out.println("Can't skip courses");
+                break;
+            default:
+                System.out.println("Invalid option.");
+                break;
+        }
+    }
+
+    private static void transferToSpecialty(Student student, String specialty) {
+        student.setSpecialty(specialty);
+        System.out.println("Student transferred to specialty " + specialty + " successfully.");
+    }
+
+    private static void transferToYear(Student student, int year) {
+        student.setCurrentCourse(year);
+        System.out.println("Student transferred to year " + year + " successfully.");
+    }
+
+
     private static void advanceStudent(String facultyNumber) {
         if (!students.containsKey(facultyNumber)) {
             System.out.println("Student with the given faculty number does not exist.");
@@ -205,8 +259,18 @@ public class Main {
         }
         Student student = students.get(facultyNumber);
 
+        for (Map.Entry<String, Integer> entry : student.getGrades().entrySet()) {
+            String key = entry.getKey();
+            Integer value = entry.getValue();
+
+            if (value == 2) {
+                System.out.println("Student has poor grades");
+                return;
+            }
+        }
+
+
         student.setStatus("graduate");
-        System.out.println("Student marked as a graduate successfully.");
     }
 
     private static void interruptStudent(String facultyNumber) {
@@ -252,6 +316,10 @@ public class Main {
 
     }
 
+    private static String getStudentStatus(String facultyNumber) {
+          return students.get(facultyNumber).getStatus();
+    }
+
     private static void printAllStudents(String program, int year) {
         System.out.println("Students in Program " + program + " Year " + year + ":");
         for (Student student : students.values()) {
@@ -280,8 +348,14 @@ public class Main {
 
         Student student = students.get(facultyNumber);
 
-        student.getGrades().put(course, grade);
-        System.out.println("Grade added for course " + course + " successfully.");
+
+        if(student.getEnrolledCourses().containsKey(course)){
+            student.getGrades().put(course, grade);
+            System.out.println("Grade added for course " + course + " successfully.");
+        }
+        else System.out.println("Student not enrolled for this course");
+
+
     }
 
     private static void printProtocol(String course) {
