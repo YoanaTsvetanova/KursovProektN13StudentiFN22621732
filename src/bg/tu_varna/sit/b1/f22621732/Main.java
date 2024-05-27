@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
@@ -18,12 +19,14 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class Main {
+    public class Main {
     private static Map<String, Student> students = new HashMap<>();
     private static String currentFileName = null;
     private static boolean fileOpened = false;
     private static Scanner scanner = new Scanner(System.in);
     private static XMLFileHandler xmlFileHandler = new XMLFileHandler();
+
+
 
 
     private static void displayHelp() {
@@ -213,7 +216,7 @@ public class Main {
             } catch (IOException e) {
                 System.out.println("An error occurred while creating the file.");
                 e.printStackTrace();
-                return; // Return without attempting to open the file
+                return;
             }
         }
 
@@ -249,8 +252,8 @@ public class Main {
                 String fileNameWithoutExtension = fileNameWithExtension.substring(0, fileNameWithExtension.lastIndexOf("."));
                 System.out.println(fileNameWithoutExtension);
                 openFile(fileNameWithoutExtension);
-                String newFilePath = currentFileName; // Use the current file path
-                xmlFileHandler.saveAs(newFilePath); // Save changes to the opened file
+                String newFilePath = currentFileName;
+                xmlFileHandler.saveAs(newFilePath);
                 saveFile();
                 System.out.println("File saved as: " + newFilePath);
             } catch (Exception e) {
@@ -419,8 +422,7 @@ public class Main {
         }
         Student student = students.get(facultyNumber);
 
-        student.getEnrolledCourses().put(course, "");
-        System.out.println("Student enrolled in course " + course + " successfully.");
+        student.setEnrolledCourses(course);
     }
 
     private static void addGrade(String facultyNumber, String course, int grade) {
@@ -431,21 +433,20 @@ public class Main {
 
         Student student = students.get(facultyNumber);
 
-
-        if(student.getEnrolledCourses().containsKey(course)){
-            student.getGrades().put(course, grade);
-            System.out.println("Grade added for course " + course + " successfully.");
-        }
-        else System.out.println("Student not enrolled for this course");
-
-
+        student.setGrades(course, grade);
     }
 
-    private static void printProtocol(String course) {
+    public static void printProtocol(String course) {
         System.out.println("Protocol for course " + course + ":");
-        for (Student student : students.values()) {
+
+        TreeMap<String, Student> sortedStudents = new TreeMap<>(students);
+
+        for (Map.Entry<String, Student> entry : sortedStudents.entrySet()) {
+            Student student = entry.getValue();
             if (student.getEnrolledCourses().containsKey(course)) {
-                System.out.println("Student: " + student.getName() + ", Grade: " + student.getGrades().get(course));
+                System.out.println("Faculty number: " + entry.getKey() +
+                        ", Name: " + student.getName() +
+                        ", Grade: " + student.getGrades().get(course));
             }
         }
     }

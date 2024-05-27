@@ -82,30 +82,33 @@ public class Student {
     }
 
     public double getAverageGrade() {
-        grades.forEach((key,value)-> averageGrade+=value);
+        final double[] totalAvgGrades = {0};
+        grades.forEach((key,value)-> totalAvgGrades[0]+=value);
 
-        averageGrade = averageGrade / grades.size();
+        averageGrade = totalAvgGrades[0] / grades.size();
 
         return averageGrade;
-    }
-
-    public void setAverageGrade(double averageGrade) {
-        this.averageGrade = averageGrade;
     }
 
     public Map<String, String> getEnrolledCourses() {
         return enrolledCourses;
     }
 
-    public void setEnrolledCourses(Map<String, String> enrolledCourses) {
-        this.enrolledCourses = enrolledCourses;
+    public void setEnrolledCourses(String enrolledCourse) {
+        this.getEnrolledCourses().put(enrolledCourse, "");
+        this.getGrades().put(enrolledCourse,2);
+        System.out.println("Student enrolled in course " + enrolledCourse + " successfully.");
     }
 
     public Map<String, Integer> getGrades() {
         return grades;
     }
 
-    public void setGrades(Map<String, Integer> grades) {
-        this.grades = grades;
+    public void setGrades(String course,Integer grade) {
+        if(this.getEnrolledCourses().containsKey(course)){
+            this.grades.put(course, grade);
+            System.out.println("Grade added for course " + course + " successfully.");
+        }
+        else System.out.println("Student not enrolled for this course");
     }
 }
