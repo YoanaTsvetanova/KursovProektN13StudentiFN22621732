@@ -1,15 +1,29 @@
 package bg.tu_varna.sit.b1.f22621732;
 
+import java.io.FileWriter;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class Main {
     private static Map<String, Student> students = new HashMap<>();
     private static String currentFileName = null;
     private static boolean fileOpened = false;
     private static Scanner scanner = new Scanner(System.in);
+    private static XMLFileHandler xmlFileHandler = new XMLFileHandler();
 
 
     private static void displayHelp() {
@@ -180,17 +194,86 @@ public class Main {
         scanner.close();
         System.out.println("Goodbye!");
     }
-    private static void openFile(String filename) {
+
+    private static void openFile(String fileName) {
+        File file = new File(fileName);
+        if (!file.exists()) {
+            try {
+                if (file.createNewFile()) {
+                    System.out.println("File created: " + file.getName());
+                    // Write initial XML content to the file
+                    FileWriter writer = new FileWriter(fileName);
+                    writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
+                    writer.write("<students>\n");
+                    writer.write("</students>\n");
+                    writer.close();
+                } else {
+                    System.out.println("File already exists.");
+                }
+            } catch (IOException e) {
+                System.out.println("An error occurred while creating the file.");
+                e.printStackTrace();
+                return; // Return without attempting to open the file
+            }
+        }
+
+        xmlFileHandler.open(fileName);
+        currentFileName = fileName;
+        fileOpened = true;
     }
+
+
+
 
     private static void saveFile() {
+        if (fileOpened && currentFileName != null) {
+            updateXMLDocument();
+            xmlFileHandler.save(currentFileName);
+        } else {
+            System.out.println("No file is currently open.");
+        }
     }
 
-    private static void saveAsFile(String filename) {
+    private static void updateXMLDocument() {
+        for (Student student : students.values()) {
+            if (!xmlFileHandler.containsStudent(student.getFacultyNumber())) {
+                xmlFileHandler.addStudent(student);
+            }
+        }
     }
+
+    private static void saveAsFile(String newFileName) {
+        if (!fileOpened) {
+            try {
+                String fileNameWithExtension = new File(newFileName).getName(); // Get the filename with extension
+                String fileNameWithoutExtension = fileNameWithExtension.substring(0, fileNameWithExtension.lastIndexOf("."));
+                System.out.println(fileNameWithoutExtension);
+                openFile(fileNameWithoutExtension);
+                String newFilePath = currentFileName; // Use the current file path
+                xmlFileHandler.saveAs(newFilePath); // Save changes to the opened file
+                saveFile();
+                System.out.println("File saved as: " + newFilePath);
+            } catch (Exception e) {
+                System.out.println("An error occurred while saving the file.");
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("No file is currently open.");
+        }
+    }
+
+
 
     private static void closeFile() {
-   }
+        if (fileOpened) {
+            xmlFileHandler.close();
+            fileOpened = false;
+            currentFileName = null;
+            students.clear();
+        } else {
+            System.out.println("No file is currently open.");
+        }
+    }
 
 
     private static void enrollStudent(String facultyNumber, String program, String group, String name) {
